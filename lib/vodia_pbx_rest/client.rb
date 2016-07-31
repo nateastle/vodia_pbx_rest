@@ -37,5 +37,23 @@ module VodiaPbxRest
       response = RestClient.get url, { :Cookie => "session=#{session_key}"}
       return License.new(JSON.parse(response.body))
     end
+
+    def domaininfo 
+      url = "#{@base_url}/rest/system/domaininfo"
+      response = RestClient.get url, { :Cookie => "session=#{session_key}"}
+      return JSON.parse(response.body)
+    end
+
+    def list_call_recording
+      url = "#{@base_url}/rest/domain/1wiresnom.1wi.co/recs"
+      response = RestClient.get url, { :Cookie => "session=#{session_key}"} 
+      return JSON.parse(response.body)
+    end
+
+    def get_call_recording(media_id) 
+      url = "#{@base_url}/audio.wav?type=recording&id=#{media_id} "
+      response = RestClient.get url, { :Cookie => "session=#{session_key};ui_reg_gen=block; acct_table#pageNavPos=1;"} 
+      return response.body
+    end
   end
 end
