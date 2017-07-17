@@ -51,26 +51,29 @@ module VodiaPbxRest
     end
 
     def get_call_recording(media_id)
-      url = "#{@base_url}/audio.wav?type=recording&id=#{media_id} "
+      url = "#{@base_url}/audio.wav?type=recording&id=#{media_id}"
       response = RestClient.get url, { :Cookie => "session=#{session_key};ui_reg_gen=block; acct_table#pageNavPos=1;"}
       return response.body
     end
 
     def accounts(domain)
-
       RestClient.log = 'stdout'
-      response = RestClient.put "#{@base_url}/rest/system/session" , "{\"name\":\"domain\",\"value\":\"#{domain}\"}" , { :Cookie => "session=#{session_key};ui_reg_gen=block; acct_table#pageNavPos=1;"}
-      url = "#{@base_url}/dom_accounts.htm?view_type="
-      response = RestClient.get url, { :Cookie => "session=#{session_key}; acct_table#pageNavPos=1; ui_dom_other=block",
-                                       "Accept" => "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-                                       "Accept-Encoding" => "gzip, deflate",
-                                       "Accept-Language" => "en-US,en;q=0.8,pt;q=0.6",
-                                       "Connection" => "keep-alive",
-                                       "Host" => @base_url,
-                                       "Referer" => "#{@base_url}/dom_accounts.htm",
-                                       "User-Agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36"}
-      ret = response.body.match(/users \=(.*?)var footnotes/m)[1].gsub(";","").gsub!("'", "").gsub!(/\"/, "\"")
-      return JSON.parse(ret)
+      url = "#{@base_url}/rest/domain/#{domain}/userlist"
+      response = RestClient.get url, { :Cookie => "session=#{session_key};ui_reg_gen=block; acct_table#pageNavPos=1;"}
+      return JSON.parse(response.body)
+    end
+
+    def acds(domain)
+      url = "#{@base_url}/rest/domain/#{domain}/userlist/acds"
+      response = RestClient.get url, { :Cookie => "session=#{session_key};ui_reg_gen=block; acct_table#pageNavPos=1;"}
+      return JSON.parse(response.body)
+    end
+
+    def user_settings(domain, name)
+      RestClient.log = 'stdout'
+      url = "#{@base_url}/rest/domain/#{domain}/user_settings/#{name}"
+      response = RestClient.get url, { :Cookie => "session=#{session_key};ui_reg_gen=block; acct_table#pageNavPos=1;"}
+      return JSON.parse(response.body)
     end
   end
 end
