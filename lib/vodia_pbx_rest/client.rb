@@ -75,5 +75,11 @@ module VodiaPbxRest
       response = RestClient.get url, { :Cookie => "session=#{session_key};ui_reg_gen=block; acct_table#pageNavPos=1;"}
       return JSON.parse(response.body)
     end
+
+    def all_acd_info(domain)
+      url = "#{@base_url}/rest/domain/#{domain}/acds"
+      response = RestClient.get url, { :Cookie => "session=#{session_key};ui_reg_gen=block; acct_table#pageNavPos=1;"}
+      return JSON.parse(response.body)
+    end
   end
 end
